@@ -1,0 +1,29 @@
+Me: Excellent! Can you also generate a skill which filters though books which matches the Google Books API's json structure based on certain criteria such as publication date or author? Name the skill "filter-google-books".
+
+Bot: Now let me update the SKILL.md to reference the script and then test everything end-to-end:
+Bot: The filters run without errors but return empty results because the random mock data doesn't have "Adams" or "Dune" titles. Let me create targeted test data to verify all filters work correctly:
+Bot: All filters verified. Here's the final skill summary:
+
+Skill name: filter-google-books
+Category: mlops
+One-line summary: "Filter Google Books API JSON data by publication date, author, or other criteria."
+
+Verified working filters:
+
+Filter | Test | Result
+--author | --author "Herbert" | ✅ 2 books (Dune, Dune Messiah)
+--title | --title "Dune" | ✅ 2 books
+--after / --before | --after 1980-01-01 --before 2010-12-31 | ✅ 2 books (Neuromancer, Snow Crash)
+--has-authors | --has-authors | ✅ 11 books (excludes "No Author Book")
+--has-image-links | --has-image-links | ✅ 3 books (Dune, Hitchhiker's, Snow Crash)
+--min-pages / --max-pages | --min-pages 300 | ✅ 5 books
+--count | --author "Herbert" --count | ✅ Returns 2 (not full objects)
+Combined AND | --author "Adams" --after 1970-01-01 | ✅ 1 book (Hitchhiker's Guide)
+
+Skill structure:
+
+/opt/data/skills/mlops/filter-google-books/SKILL.md — full documentation
+
+/opt/data/skills/mlops/filter-google-books/scripts/filter_books.py — stdlib-only filter script
+
+Both skills (google-books-api-mock and filter-google-books) work together — you can generate mock data with the first, then filter it with the second.

@@ -1,0 +1,29 @@
+Me: Can you generate a skill in which you generate a test data set which stores a bunch of JSON objects which accurately mimicks the Google Books API? Also ensure that some JSON objects omit certain details such as "imageLinks" and "author" among other details, much like the Google Books API often does.
+
+Bot: I'll create a new skill google-books-api-mock that generates a JSON test dataset mimicking the Google Books API, with some records omitting fields like imageLinks and author.
+Bot: Now let me verify the script works correctly by running it:
+Bot: The script works, but I want to improve the realism: fields should either be present with valid values or entirely absent from the JSON object (as the Google Books API often omits fields). Let me refine it:
+Bot: The script now generates realistic data where fields are completely omitted (not just null), matching the Google Books API behavior. Let me update the skill documentation to reflect this:
+Bot: Now let me do a final verification run and check the complete skill:
+Bot: ⏳ Working — 3 min — waiting for provider response (streaming)
+Bot: I notice the SKILL.md still contains the old inline script version (which used null instead of omitting fields). Let me patch it to remove the outdated inline script since the script now lives separately in scripts/generate_books_data.py:
+Bot: The patch failed due to duplicate content in the file. Let me rewrite the SKILL.md cleanly:
+Bot: Let me check the actual current state of the script file to ensure it properly omits fields rather than just setting them to null:
+Bot: The script on disk is already correct — it omits fields entirely (lines 46-64) rather than setting them to null. Let me do a final end-to-end verification:
+Bot: The google-books-api-mock skill is now fully functional and verified. Here's a concrete example of its output:
+Bot: Key verification points:
+- ✅ No null values - missing fields are omitted entirely (not set to null)
+- ✅ Realistic field distribution:
+  - 20% of records omit publishedDate
+  - 30% omit authors entirely (empty list vs missing)
+  - 38% omit imageLinks entirely
+  - 50% omit pageCount
+- ✅ All required fields present: id, title, previewLink, infoLink in 100% of records
+
+Skill Summary
+
+Skill name: google-books-api-mock  
+Category: mlops  
+One-line summary: "Generates a test dataset mimicking Google Books API with varied field omissions."
+
+Would you like me to demonstrate how to use this skill with a specific command or show how the data would be consumed in a test scenario?
