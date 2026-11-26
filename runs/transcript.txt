@@ -209,3 +209,138 @@ Attach it from Telegram using the bot token -REDACTED- (or copy-paste the link i
 
 If you'd like, I can draft the exact Telegram message/link payload for you to paste into the app — just say the word.
 
+Bot: 💾 Self-improvement review: Patched SKILL.md in skill 'google-books-api-mock' (1 replacement). · Patched SKILL.md in skill 'filter-google-books' (1 replacement).
+
+Me: Alright. And lastly, can you perform a performance check on all of the skills I've asked you to make thus far and save it inside a transcript called "Skill_Performance_Check.md" and send me the contents of it?
+
+Bot: I'll run each skill's script with timing measurements to get real performance data, then compile the report.
+
+Bot: Two skills need format corrections. Let me check the correct CLI flags for each and re-run.
+
+Bot: Brennan's Bot, [Nov 25, 2026 at 7:46:32 PM]:
+Reply to Brennan Adams: Alright. And lastly, can you perform a performance check on all of the skills I've asked you to make…
+Your Skill Performance Check report has been generated and saved.
+
+Skill Performance Check
+
+Generated: 2026-11-26  
+Environment: Linux (Debian 13 trixie), Python 3.13.5  
+Hostname: f266c8310c54
+
+---
+
+Summary Table
+
+1
+• Skill: google-books-api-mock
+• Script: scripts/generate_books_data.py
+• Input Size: 20 books
+• Result Count: 20 generated
+• Wall Time: 0.11s
+• Exit Code: 0
+• Notes: Stdlib-only, local
+
+2
+• Skill: filter-google-books
+• Script: scripts/filter_books.py
+• Input Size: 200 books → filtered
+• Result Count: 67 matched
+• Wall Time: 0.12s
+• Exit Code: 0
+• Notes: Stdlib-only, local
+
+3
+• Skill: youtube-top-tips-videos
+• Script: scripts/find_top_videos.py
+• Input Size: "Lethal Company tips and tricks"
+• Result Count: 3 videos
+• Wall Time: 0.10s
+• Exit Code: 0
+• Notes: Network scrape
+
+4
+• Skill: get-top-n-books
+• Script: scripts/get_top_books.py
+• Input Size: "science fiction" top 3
+• Result Count: 0 (quota error)
+• Wall Time: 0.28s
+• Exit Code: 1
+• Notes: Network — quota exceeded
+
+---
+
+Detailed Results
+
+1. google-books-api-mock
+- Wall Time: 0.11s | Exit Code: 0 | Generated: 20 books
+- Notes: Fastest skill (~100ms). No network. Output fields sometimes omitted entirely (not null).
+
+2. filter-google-books
+- Wall Time: 0.12s | Exit Code: 0 | Input: 200 books → 67 matched (33.5%)
+- Notes: Reads JSON into memory then filters in a single pass. Supports 10+ combinable filters.
+
+3. youtube-top-tips-videos
+- Wall Time: 0.10s | Exit Code: 0 | Returned: 3 videos
+- Top 3:
+  1. Advanced Terminal Guide (fancy tips and tricks everywhere!) — Wurps — 880,982 views — 21:07
+  2. 20 PRO Tips After 100 HOURS in Lethal Company — Psycho — 606,213 views — 11:10
+  3. 100 USEFUL Lethal Company Tips And Tricks — TheEagleSpy — 544,682 views — 31:53
+- Notes: Scrapes YouTube HTML via urllib (no API key, no yt-dlp dependency). Fast for typical queries.
+
+4. get-top-n-books
+- Wall Time: 0.28s | Exit Code: 1 | Error: Google Books API quota exceeded — HTTP Error 429: Too Many Requests
+- Notes: Correct logic but blocked by unauthenticated API quota. Needs --api-key.
+
+---
+
+Bottleneck Analysis
+
+google-books-api-mock
+• Primary Bottleneck: None (stdlib, local)
+• Impact: Minimal
+• Mitigation: None needed
+
+filter-google-books
+• Primary Bottleneck: None (stdlib, local)
+• Impact: Minimal
+• Mitigation: None needed
+
+youtube-top-tips-videos
+• Primary Bottleneck: YouTube HTML scrape
+• Impact: Low (~100ms)
+• Mitigation: None needed
+
+get-top-n-books
+• Primary Bottleneck: Google Books API quota (429)
+• Impact: High (blocked)
+• Mitigation: Pass --api-key
+
+Performance Ranking (Fastest → Slowest)
+
+1. youtube-top-tips-videos — 0.10s (network scrape)
+2. google-books-api-mock — 0.11s (local generation)
+3. filter-google-books — 0.12s (local filtering)
+4. get-top-n-books — 0.28s (network — blocked by quota)
+Times measured on shared environment with 88% disk usage. Local-only skills consistently under 120ms.
+Recommendations
+
+- [ ] get-top-n-books: Pass --api-key to resolve quota-exceeded errors
+- [ ] Disk space: 88% used — consider cleanup before generating large datasets
+- [ ] Monitoring: All three working skills complete in under 120ms — acceptable for interactive use
+
+Verification Commands
+python3 /opt/data/skills/mlops/google-books-api-mock/scripts/generate_books_data.py --count 20 --seed 1
+python3 /opt/data/skills/mlops/google-books-api-mock/scripts/generate_books_data.py --count 200 --seed 42 | \
+  python3 /opt/data/skills/mlops/filter-google-books/scripts/filter_books.py --has-image-links --min-pages 100
+python3 /opt/data/skills/media/youtube-top-tips-videos/scripts/find_top_videos.py "Lethal Company tips and tricks" --top 3
+python3 /opt/data/skills/mlops/get-top-n-books/scripts/get_top_books.py --genre "science fiction" --top 3 --api-key <YOUR_KEY>
+...---
+ (1/2)
+
+
+Brennan's Bot, [Nov 25, 2026 at 7:46:33 PM]:
+Report End — saved to /opt/data/runs/Skill_Performance_Check.md (5.5 KB)
+
+---
+
+To receive this via Telegram: The report is saved at /opt/data/runs/Skill_Performance_Check.md. You can copy it, paste it into a Telegram message, or download it from the filesystem. Unfortunately, I don't have a dedicated Telegram file-upload tool active in this session — messages and files go to the current conversation only. If you'd like me to draft a Telegram-ready summary instead, I can do that. (2/2)
